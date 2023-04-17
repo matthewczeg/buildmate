@@ -1,0 +1,33 @@
+@tailwind base;
+
+
+.chatContainer {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 1rem;
+    background-color: #f7f7f7;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+@media(min-width:768px) {
+    .chatContainer {
+        padding: 2rem;
+    }
+}
+
+.userMessage {
+    align-self: flex-start;
+    background-color: #e5e5e5;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+}
+
+.assistantMessage {
+    align-self: flex-end;
+    background-color: #3182ce;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+}
