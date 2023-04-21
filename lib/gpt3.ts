@@ -20,7 +20,7 @@ export async function getGpt3Response(messages) {
 
   messages = [systemMessage, ...messages];
 
-  const response = await axios.post(GPT3_API_ENDPOINT, { model: 'gpt-4', messages }, { headers: { 'Authorization': `Bearer ${OPENAI_API_KEY}` } });
+  const response = await axios.post(GPT3_API_ENDPOINT, { model: 'gpt-3.5-turbo', messages }, { headers: { 'Authorization': `Bearer ${OPENAI_API_KEY}` } });
 
   return response.data.choices[0].message.content;
 }

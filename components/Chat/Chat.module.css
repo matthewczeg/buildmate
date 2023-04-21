@@ -1,26 +1,154 @@
-@tailwind base;.floatingInput {position: fixed;bottom: 20px;left: 50%;transform: translateX(-50%);z-index: 1000;}.thinkingAnimation {animation: thinking 1s infinite;}.fadeOut {animation: fadeOut 1s forwards;}@keyframes thinking {0% {opacity: 1;}50% {opacity: 0.5;}100% {opacity: 1;}}@keyframes fadeOut {0% {opacity: 1;transform: scale(1) translateX(-50%);}100% {opacity: 0;transform: scale(0.5) translateX(-50%);}}
+@tailwind base;
 
-.userResponsesContainer {width: 100%;max-width: 600px;margin-bottom: 1rem;padding: 1rem;background-color: #e5e5e5;border-radius: 10px;box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);}
-
-.centeredInput {
-    position: fixed;
-    bottom: 50%;
-    left: 50%;
-    transform: translate(-50%, 50%);
-    z-index: 1000;
-  }
-
-  .chatContainer {width: 100%;height: 100vh;margin: 0;padding: 1rem;background-color: #f7f7f7;border-radius: 0;box-shadow: none;display: flex;flex-direction: column;align-items: center;justify-content: center;}
-  
-.optionClicked {animation: pulsate 0.2s;}@keyframes pulsate {0% {transform: scale(1);}50% {transform: scale(0.95);}100% {transform: scale(1);}}
-
-.responseBox {background-color: #ffffff;border-radius: 10px;padding: 1rem;box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);margin-bottom: 1rem;animation: fadeIn 1s;}@keyframes fadeIn {0% {opacity: 0;transform: translateY(20px);}100% {opacity: 1;transform: translateY(0);}}.optionsContainer {display: flex;flex-wrap: wrap;justify-content: center;}
-
-.userMessage {
-    align-self: flex-start;
-    background-color: #e5e5e5;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
+.floatingInput {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
 }
 
-.assistantMessage {align-self: flex-end;background-color: #3182ce;color: #fff;padding: 0.5rem 1rem;border-radius: 20px;}.chatInput {border: 1px solid #ccc;background-color: #fff;color: #333;padding: 0.5rem 1rem;border-radius: 20px;font-family: inherit;outline: none;} .chatInput:focus {border-color: #3182ce;box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.3);}
+.thinkingAnimation {
+  animation: thinking 1s infinite;
+}
+
+.fadeOut {
+  animation: fadeOut 1s forwards;
+}
+
+@keyframes thinking {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateX(-50%);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0.5) translateX(-50%);
+  }
+}
+
+.userResponsesContainer {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background-color: #ffbebe;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.centeredInput {
+  position: fixed;
+  bottom: 50%;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  z-index: 1000;
+  background-color: #ffffff;
+  border-radius: 2px;
+  border-color: #3182ce;
+}
+
+.chatContainer {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 1rem;
+  background-color: rgb(240, 240, 240);
+  border-radius: 0;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.optionClicked {
+  animation: pulsate 0.2s;
+}
+
+@keyframes pulsate {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.95);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.responseBox {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+  animation: fadeIn 1s;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.optionsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.userMessage {
+  align-self: flex-start;
+  background-color: #e5e5e5;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  color: #000;
+}
+
+.assistantMessage {
+  align-self: flex-end;
+  background-color: #3182ce;
+  color: #000;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+}
+
+.chatInput {
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #333;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-family: inherit;
+  outline: none;
+}
+
+.chatInput:focus {
+  border-color: #3182ce;
+  box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.3);
+}
