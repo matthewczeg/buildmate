@@ -110,7 +110,7 @@ function Chat() {
           }}
         >
           <Stack direction="row" spacing={3}>
-            <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Type your message..." />
+          <Input className={styles.chatInput} value={input} onChange={(e) => setInput(e.target.value)} placeholder="Type your message..."/>
             <Button type="submit">Send</Button>
           </Stack>
         </form>
