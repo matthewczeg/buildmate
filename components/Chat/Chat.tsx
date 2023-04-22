@@ -74,6 +74,35 @@ function Chat() {
     setThinking(false);
   }
 
+  interface OptionProps {
+    option: string;
+    onClick: (option: string) => void;
+  }
+
+  function Option({ option, onClick }: OptionProps) {
+    const [clicked, setClicked] = useState(false);
+
+    const handleClick = () => {
+      onClick(option);
+      setClicked(true);
+      setTimeout(() => setClicked(false), 200);
+    };
+
+    return (
+      <Button
+        size="sm"
+        variant="outline"
+        colorScheme="blue"
+        onClick={handleClick}
+        marginRight="4px"
+        marginBottom="4px"
+        className={clicked ? styles.optionClicked : ''}
+      >
+        {option}
+      </Button>
+    );
+  }
+
   async function handleOptionClick(option) {
     const newChatHistory = [...chatHistory, { role: 'user', content: option }];
     setChatHistory(newChatHistory);
