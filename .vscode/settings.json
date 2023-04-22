@@ -1,11 +1,11 @@
 {
-    "emeraldwalk.runonsave": {
-      "commands": [
-        {
-          "match": ".*",
-          "isAsync": true,
-          "cmd": "python generate_code_tree.py"
-        }
-      ]
-    }
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": ".*",
+        "isAsync": true,
+        "cmd": "python3 generate_code_tree.py"
+      }
+    ]
   }
+}

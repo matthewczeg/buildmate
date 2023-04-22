@@ -27,12 +27,18 @@ function Option({ option, onClick }) {
   );
 }
 
+function isFinalResponse(response: string) {
+  const regex = /^[a-zA-Z]\./gm;
+  return !regex.test(response);
+}
+
 function Chat() {
   const [chatHistory, setChatHistory] = useState([]);
   const [input, setInput] = useState('');
   const [options, setOptions] = useState([]);
   const [thinking, setThinking] = useState(false);
   const [fadeOut, setFadeOut] = useState(false);
+  const [inputVisible, setInputVisible] = useState(true);
 
   async function handleSubmit(newChatHistory) {
     setThinking(true);
@@ -42,16 +48,23 @@ function Chat() {
       body: JSON.stringify({ messages: chatHistory.concat(newChatHistory) }),
     });
     const data = await response.json();
-    setFadeOut(true); // Added this line to fade out input after receiving API response
+    setFadeOut(true);
 
     const responseObject = {
       fullResponse: data.response,
       options: data.response.split('\n').filter(line => /^[a-zA-Z]\./.test(line)),
       message: data.response.replace(/^[a-zA-Z]\..*\n?/gm, ''),
     };
+
     setOptions(responseObject.options.length > 0 ? responseObject.options : []);
     setChatHistory([...newChatHistory, { role: 'assistant', content: responseObject.message }]);
     setInput('');
+
+    if (isFinalResponse(responseObject.message)) {
+      setInputVisible(true);
+    } else {
+      setFadeOut(false);
+    }
 
     setThinking(false);
   }
@@ -65,45 +78,49 @@ function Chat() {
   return (
     <Box className={styles.chatContainer}>
       <Box>
-        {chatHistory.map((msg, index) => (
-          <Box key={index} className={styles.responseBox}>
-            <Text>{msg.content}</Text>
-          </Box>
-        ))}
+        {chatHistory.slice(-1).map((msg, index) =>
+          msg.role === 'assistant' ? (
+            <Box key={index} className={styles.responseBox}>
+              <Text>{msg.content}</Text>
+            </Box>
+          ) : null
+        )}
       </Box>
-      <Box
-        className={`${styles.floatingInput} ${
-          fadeOut ? styles.fadeOut : ''
-        } ${chatHistory.length === 0 ? styles.centeredInput : ''}`}
-        onAnimationEnd={() => setFadeOut(false)}
-      >
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSubmit([...chatHistory, { role: 'user', content: input }]);
-          }}
+      {inputVisible && (
+        <Box
+          className={`${styles.floatingInput} ${fadeOut ? styles.fadeOut : ''} ${chatHistory.length === 0 ? styles.centeredInput : ''
+            }`}
+          onAnimationEnd={() => setFadeOut(false)}
         >
-          <Stack direction="row" spacing={3}>
-            <Input
-              className={styles.chatInput}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Type your message..."
-            />
-            <Button type="submit">Send</Button>
-          </Stack>
-        </form>
-      </Box>
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              handleSubmit([...chatHistory, { role: 'user', content: input }]);
+              setThinking(true);
+              if (chatHistory.length === 0) {
+                setInputVisible(false);
+              }
+            }}
+          >
+            <div className={styles.inputGlow} style={{ opacity: thinking ? 1 : 0 }}></div>
+            <Stack direction="row" spacing={3}>
+              <Input
+                className={styles.chatInput}
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                placeholder="Type your message..."
+              />
+              <Button type="submit">Send</Button>
+            </Stack>
+          </form>
+        </Box>
+      )}
       <Box className={styles.optionsContainer}>
         {options.map((option, index) => (
-          <Option
-            key={index}
-            option={option}
-            onClick={() => {
-              handleOptionClick(option);
-              setOptions([]);
-            }}
-          />
+          <Option key={index} option={option} onClick={() => {
+            handleOptionClick(option);
+            setOptions([]);
+          }} />
         ))}
       </Box>
     </Box>
