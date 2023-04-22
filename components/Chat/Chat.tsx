@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './Chat.module.css';
 import { Box, Button, Input, Stack, Text } from '@chakra-ui/react';
 import React from 'react';
@@ -27,7 +27,15 @@ function Option({ option, onClick }) {
   );
 }
 
-function isFinalResponse(response: string) {
+function AssistantMessage({ message }) {
+  return (
+    <Box className={styles.responseBox}>
+      <Text>{message}</Text>
+    </Box>
+  );
+}
+
+function isFinalResponse(response) {
   const regex = /^[a-zA-Z]\./gm;
   return !regex.test(response);
 }
@@ -37,18 +45,21 @@ function Chat() {
   const [input, setInput] = useState('');
   const [options, setOptions] = useState([]);
   const [thinking, setThinking] = useState(false);
-  const [fadeOut, setFadeOut] = useState(false);
   const [inputVisible, setInputVisible] = useState(true);
+
+  useEffect(() => {
+    setInputVisible(chatHistory.length === 0);
+  }, [chatHistory]);
 
   async function handleSubmit(newChatHistory) {
     setThinking(true);
+    setInputVisible(false);
     const response = await fetch('/api/gpt3', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ messages: chatHistory.concat(newChatHistory) }),
     });
     const data = await response.json();
-    setFadeOut(true);
 
     const responseObject = {
       fullResponse: data.response,
@@ -59,13 +70,7 @@ function Chat() {
     setOptions(responseObject.options.length > 0 ? responseObject.options : []);
     setChatHistory([...newChatHistory, { role: 'assistant', content: responseObject.message }]);
     setInput('');
-
-    if (isFinalResponse(responseObject.message)) {
-      setInputVisible(true);
-    } else {
-      setFadeOut(false);
-    }
-
+    setInputVisible(true);
     setThinking(false);
   }
 
@@ -78,43 +83,34 @@ function Chat() {
   return (
     <Box className={styles.chatContainer}>
       <Box>
-        {chatHistory.slice(-1).map((msg, index) =>
-          msg.role === 'assistant' ? (
-            <Box key={index} className={styles.responseBox}>
-              <Text>{msg.content}</Text>
-            </Box>
-          ) : null
-        )}
+        {chatHistory.slice(-1).map((msg, index) => msg.role === 'assistant' && <AssistantMessage key={index} message={msg.content} />)}
       </Box>
-      {inputVisible && (
-        <Box
-          className={`${styles.floatingInput} ${fadeOut ? styles.fadeOut : ''} ${chatHistory.length === 0 ? styles.centeredInput : ''
-            }`}
-          onAnimationEnd={() => setFadeOut(false)}
+      <Box
+        className={`${styles.floatingInput} ${chatHistory.length === 0 ? '' : styles.chatInputNotCentered}`}
+        onAnimationEnd={() => setThinking(false)}
+      >
+        <form
+          onSubmit={e => {
+            e.preventDefault();
+            handleSubmit([...chatHistory, { role: 'user', content: input }]);
+            setThinking(true);
+          }}
         >
-          <form
-            onSubmit={e => {
-              e.preventDefault();
-              handleSubmit([...chatHistory, { role: 'user', content: input }]);
-              setThinking(true);
-              if (chatHistory.length === 0) {
-                setInputVisible(false);
-              }
-            }}
-          >
-            <div className={styles.inputGlow} style={{ opacity: thinking ? 1 : 0 }}></div>
-            <Stack direction="row" spacing={3}>
-              <Input
-                className={styles.chatInput}
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                placeholder="Type your message..."
-              />
-              <Button type="submit">Send</Button>
-            </Stack>
-          </form>
-        </Box>
-      )}
+          <div className={styles.inputGlow} style={{ opacity: thinking ? 1 : 0 }}></div>
+          <Stack direction="row" spacing={3}>
+            <Input
+              className={styles.chatInput}
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              placeholder="Type your message..."
+              isDisabled={!inputVisible}
+            />
+            <Button type="submit" isDisabled={!inputVisible}>
+              Send
+            </Button>
+          </Stack>
+        </form>
+      </Box>
       <Box className={styles.optionsContainer}>
         {options.map((option, index) => (
           <Option key={index} option={option} onClick={() => {
